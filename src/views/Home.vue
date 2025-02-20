@@ -1,29 +1,45 @@
-<script setup>
-import FeatureList from '../components/FeatureList.vue'
-</script>
-
 <template>
   <div class="home">
-    <h1>KI-gestützter Reiseplaner</h1>
-    <h2>Luxus und Abenteuer neu erleben</h2>
-
-    <section class="intro">
-      <p>
-        Willkommen in der Zukunft der Reiseplanung. Unsere KI-gestützte Plattform
-        verbindet personalisierte Empfehlungen, Überraschungsreisen und exklusive
-        Dienstleistungen, um unvergessliche Reisen zu schaffen, die genau auf Sie
-        zugeschnitten sind.
-      </p>
-    </section>
-
-    <FeatureList />
-
-    <section class="cta">
-      <router-link to="/planner" class="btn-primary">Starten Sie Ihre Reiseplanung</router-link>
-      <router-link to="/luxury" class="btn-secondary">Entdecken Sie Luxusoptionen</router-link>
-    </section>
+    <h1>Willkommen bei unserem Reiseplaner</h1>
+    <div v-if="offers.length">
+      <h2>Aktuelle Angebote:</h2>
+      <ul>
+        <li v-for="offer in offers" :key="offer.id">
+          {{ offer.title }} - {{ offer.price }}
+        </li>
+      </ul>
+    </div>
+    <div v-else>
+      Laden der Angebote...
+    </div>
   </div>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+  name: 'Home',
+  data() {
+    return {
+      offers: []
+    }
+  },
+  mounted() {
+    this.fetchOffers();
+  },
+  methods: {
+    async fetchOffers() {
+      try {
+        const response = await axios.get('http://localhost:3000/api/scraped-offers');
+        this.offers = response.data;
+      } catch (error) {
+        console.error('Error fetching offers:', error);
+      }
+    }
+  }
+}
+</script>
 
 <style scoped>
 .home {

@@ -96,7 +96,8 @@ export default {
       },
       aiRecommendation: null,
       isLoading: false,
-      error: null
+      error: null,
+      apiKey: import.meta.env.VITE_OPENAI_API_KEY
     }
   },
   methods: {
@@ -106,17 +107,11 @@ export default {
       this.showAIForm = false;
       this.showAIComparison = false;
     },
-    watch: {
-      showAIForm(newValue) {
-        console.log('showAIForm changed to:', newValue);
-      }
-    },
     handleAIButtonClick() {
       console.log('KI-Empfehlung Button wurde geklickt');
-      alert('KI-Empfehlung Button wurde geklickt');
-      this.showAIForm();
+      this.showAIFormFunc();
     },
-    showAIForm() {
+    showAIFormFunc() {
       console.log('showAIForm wurde aufgerufen');
       this.showManualComparison = false;
       this.showAIForm = true;
@@ -128,6 +123,7 @@ export default {
       });
     },
     async submitAIForm() {
+      console.log("Verwendeter API-Schlüssel:", this.apiKey);
       this.showAIForm = false;
       this.showAIComparison = true;
       this.isLoading = true;
@@ -153,7 +149,7 @@ export default {
           },
           {
             headers: {
-              'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
+              'Authorization': `Bearer ${this.apiKey}`,
               'Content-Type': 'application/json'
             }
           }
@@ -165,7 +161,7 @@ export default {
         console.error('Fehler beim Abrufen der KI-Empfehlung:', error);
         if (error.response && error.response.status === 429) {
           console.log('API-Limit erreicht. Verwende Fallback-Empfehlung.');
-          this.aiRecommendation = this.getFallbackRecommendation();
+          //this.aiRecommendation = this.getFallbackRecommendation();
         } else {
           if (error.response) {
             console.error('Fehler-Daten:', error.response.data);
@@ -207,6 +203,12 @@ export default {
   mounted() {
     // Remove this line to prevent automatic display of manual comparison
     // this.compareManually();
+    console.log('ComparisonPortal component mounted');
+  },
+  watch: {
+    showAIForm(newValue) {
+      console.log('showAIForm changed to:', newValue);
+    }
   }
 }
 </script>
