@@ -1,6 +1,6 @@
 # KI-Reiseplaner
 
-This template should help get you started developing with Vue 3 in Vite.
+Vergleichsportal und Überraschungsreisen. Außerdem können exklusive Reisen und auch luxuriöse Reisen angeboten.
 
 ## Recommended IDE Setup
 
@@ -13,7 +13,7 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 ## Project Setup
 
 ```sh
-npm install
+npm install --save-dev
 ```
 
 ### Compile and Hot-Reload for Development
