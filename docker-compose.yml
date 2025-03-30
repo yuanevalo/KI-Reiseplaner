@@ -1,0 +1,10 @@
+services:
+  express-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: express-app
+    ports:
+      - "3000:3000"
+    environment:
+      - ENV=express-db
