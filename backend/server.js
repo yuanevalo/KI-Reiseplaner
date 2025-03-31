@@ -4,6 +4,9 @@ import puppeteer from "puppeteer";
 const app = express();
 
 const url = "https://booking-dp.lastminute.de/";
+const content = ".HubOfferFolderstyles__Content-sc-13d6y6n-0";
+const title = ".HubOfferFolderstyles__Title-sc-13d6y6n-1";
+const label = ".HubOfferFolderstyles__CtaLabel-sc-13d6y6n-3";
 const port = 3000;
 
 app.get("/api/scraped-offers", async (req, res) => {
@@ -25,23 +28,11 @@ app.get("/api/scraped-offers", async (req, res) => {
       waitUntil: "networkidle0",
     });
 
-    // Wait for the CAPTCHA to be solved (this might require manual intervention or a CAPTCHA solving service)
-    await page.waitForNavigation({
-      waitUntil: "networkidle0",
-      timeout: 60000,
-    });
-
-    // Check if we're past the CAPTCHA
-    const content = await page.content();
-    if (content.includes("Nur einen Moment…")) {
-      throw new Error("CAPTCHA erkannt – Zugriff blockiert!");
-    }
-
     // Scrape die Titel und Preise
     const results = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll(".offer")).map((offer) => ({
-        title: offer.querySelector(".title").textContent,
-        price: offer.querySelector(".price").textContent,
+      return Array.from(document.querySelectorAll(content)).map((offer) => ({
+        title: offer.querySelector(title).textContent,
+        price: offer.querySelector(label).textContent,
       }));
     });
 
