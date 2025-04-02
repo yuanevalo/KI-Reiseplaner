@@ -4,41 +4,41 @@
     <div v-if="offers.length">
       <h2>Aktuelle Angebote:</h2>
       <ul>
-        <li v-for="offer in offers" :key="offer.id">
+        <li v-for="(offer, index) in offers" :key="index">
           {{ offer.title }} - {{ offer.price }}
         </li>
       </ul>
     </div>
-    <div v-else>
-      Laden der Angebote...
-    </div>
+    <div v-else>Laden der Angebote...</div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 
 export default {
-  name: 'Home',
+  name: "Home",
   data() {
     return {
-      offers: []
-    }
+      offers: [], // Hier werden die Angebote gespeichert
+    };
   },
   mounted() {
-    this.fetchOffers();
+    this.fetchOffers(); // Beim Laden der Komponente Angebote abrufen
   },
   methods: {
     async fetchOffers() {
       try {
-        const response = await axios.get('http://localhost:3000/api/scraped-offers');
-        this.offers = response.data;
+        const response = await axios.get(
+          "http://localhost:3000/api/scraped-offers"
+        ); // Anfrage an deinen Backend-Endpunkt
+        this.offers = response.data; // Die empfangenen Daten setzen
       } catch (error) {
-        console.error('Error fetching offers:', error);
+        console.error("Error fetching offers:", error); // Fehlerbehandlung
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -67,7 +67,8 @@ h2 {
   margin-top: 2rem;
 }
 
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
@@ -77,7 +78,7 @@ h2 {
 }
 
 .btn-primary {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
