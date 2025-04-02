@@ -1,13 +1,12 @@
 import express from "express";
 import puppeteer from "puppeteer";
-
-const app = express();
+import cors from "cors";
 
 const url = "https://booking-dp.lastminute.de/";
-const content = ".HubOfferFolderstyles__Content-sc-13d6y6n-0";
-const title = ".HubOfferFolderstyles__Title-sc-13d6y6n-1";
-const label = ".HubOfferFolderstyles__CtaLabel-sc-13d6y6n-3";
 const port = 3000;
+
+const app = express();
+app.use(cors());
 
 app.get("/api/scraped-offers", async (req, res) => {
   let browser;
@@ -30,9 +29,16 @@ app.get("/api/scraped-offers", async (req, res) => {
 
     // Scrape die Titel und Preise
     const results = await page.evaluate(() => {
-      return Array.from(document.querySelectorAll(content)).map((offer) => ({
-        title: offer.querySelector(title).textContent,
-        price: offer.querySelector(label).textContent,
+      // Nur div-Elemente mit einer bestimmten Klasse, die das Angebot enthalten
+      return Array.from(
+        document.querySelectorAll("div[class*='HubOfferFolderstyles__Content']")
+      ).map((offer) => ({
+        title: offer.querySelector("h4")
+          ? offer.querySelector("h4").textContent
+          : null,
+        price: offer.querySelector("span")
+          ? offer.querySelector("span").textContent
+          : null,
       }));
     });
 
