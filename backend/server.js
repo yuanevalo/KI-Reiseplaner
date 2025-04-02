@@ -31,13 +31,18 @@ app.get("/api/scraped-offers", async (req, res) => {
     const results = await page.evaluate(() => {
       // Nur div-Elemente mit einer bestimmten Klasse, die das Angebot enthalten
       return Array.from(
-        document.querySelectorAll("div[class*='HubOfferFolderstyles__Content']")
+        document.querySelectorAll(
+          "div[class*='HubOfferFolderstyles__CardContentWrapper']"
+        )
       ).map((offer) => ({
         title: offer.querySelector("h4")
           ? offer.querySelector("h4").textContent
           : null,
         price: offer.querySelector("span")
           ? offer.querySelector("span").textContent
+          : null,
+        image: offer.querySelector("img")
+          ? offer.querySelector("img").src
           : null,
       }));
     });
