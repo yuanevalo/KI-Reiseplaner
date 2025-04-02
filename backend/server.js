@@ -27,6 +27,12 @@ app.get("/api/scraped-offers", async (req, res) => {
       waitUntil: "networkidle0",
     });
 
+    // Check if we're past the CAPTCHA
+    const content = await page.content();
+    if (content.includes("Nur einen Moment…")) {
+      throw new Error("CAPTCHA erkannt – Zugriff blockiert!");
+    }
+
     // Scrape die Titel und Preise
     const results = await page.evaluate(() => {
       // Nur div-Elemente mit einer bestimmten Klasse, die das Angebot enthalten
@@ -50,7 +56,7 @@ app.get("/api/scraped-offers", async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error("❌ Scraping-Fehler:", error);
-    res.status(500).json({ error: `Fehler beim Abrufen: ${error.message}` });
+    res.status(503).json({ error: `Fehler beim Abrufen: ${error.message}` });
   } finally {
     if (browser) {
       await browser.close();

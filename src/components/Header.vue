@@ -12,8 +12,8 @@
 
 <style scoped>
 header {
-  background-color: #4CAF50;
-  padding: 1rem;
+  background-color: #333;
+  padding: 1.5rem;
   position: fixed;
   top: 0;
   left: 0;
@@ -25,9 +25,13 @@ nav {
   justify-content: space-around;
 }
 
-a {
+nav a {
   color: white;
   text-decoration: none;
+}
+
+nav a.router-link-exact-active {
+  color: #42b983;
   font-weight: bold;
 }
 </style>
