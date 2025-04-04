@@ -30,24 +30,7 @@ export default {
   name: "Home",
   data() {
     return {
-      offers: [
-        // Löschen bei Produktion
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 0 €",
-          image: "https://picsum.photos/200/300",
-        },
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 0 €",
-          image: "https://picsum.photos/200/300",
-        },
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 0 €",
-          image: "https://picsum.photos/200/300",
-        },
-      ],
+      offers: [],
     };
   },
   mounted() {
@@ -62,7 +45,27 @@ export default {
         this.offers = response.data; // Die empfangenen Daten setzen
       } catch (error) {
         console.error("Error fetching offers:", error); // Fehlerbehandlung
+        this.offers = this.fallbackOffers();
       }
+    },
+    fallbackOffers() {
+      return [
+        {
+          title: "Berlin, Deutschland",
+          price: "ab 10 €",
+          image: "https://picsum.photos/200/300",
+        },
+        {
+          title: "Berlin, Deutschland",
+          price: "ab 100 €",
+          image: "https://picsum.photos/200/300",
+        },
+        {
+          title: "Berlin, Deutschland",
+          price: "ab 1000 €",
+          image: "https://picsum.photos/200/300",
+        },
+      ];
     },
   },
 };
