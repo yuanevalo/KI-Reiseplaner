@@ -1,18 +1,17 @@
 <template>
   <div class="comparison-title">
     <h1>Reisevergleichsportal</h1>
-    <div class="comparison-options">
-      <button @click="chatGPT" :class="{ active: showChatGPT }">
-        KI-Empfehlung ChatGPT
-      </button>
-      <button @click="gemini" :class="{ active: showGemini }">
-        KI-Empfehlung Gemini
-      </button>
+    <div class="toggle-container">
+      <label class="switch">
+        <input type="checkbox" v-model="isChatGPTActive" />
+        <span class="slider round"></span>
+      </label>
+      <span>{{ isChatGPTActive ? "ChatGPT" : "Gemini" }}</span>
     </div>
-    <div v-if="showChatGPT">
+    <div v-if="isChatGPTActive">
       <ComparisonPortalChatGPT />
     </div>
-    <div v-if="showGemini">
+    <div v-else>
       <ComparisonPortalGemini />
     </div>
   </div>
@@ -30,19 +29,8 @@ export default {
   },
   data() {
     return {
-      showChatGPT: false,
-      showGemini: false,
+      isChatGPTActive: false,
     };
-  },
-  methods: {
-    chatGPT() {
-      this.showChatGPT = true;
-      this.showGemini = false;
-    },
-    gemini() {
-      this.showGemini = true;
-      this.showChatGPT = false;
-    },
   },
 };
 </script>
@@ -50,18 +38,60 @@ export default {
 <style>
 .comparison-title {
   text-align: center;
+  position: relative;
 }
 
-.comparison-options {
+.toggle-container {
+  position: absolute;
+  top: 20px;
+  right: 20px;
   display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-bottom: 20px;
+  align-items: center;
+  gap: 10px;
 }
 
-.comparison-options button {
-  padding: 10px 20px;
-  font-size: 16px;
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
   cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 25px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 4px;
+  bottom: 3.5px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196f3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
 }
 </style>
