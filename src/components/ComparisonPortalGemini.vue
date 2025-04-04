@@ -1,9 +1,15 @@
 <template>
   <div class="comparison-portal">
-    <h1>Reisevergleichsportal</h1>
     <div class="comparison-options">
-      <button @click="showAIFormFunc" :class="{ active: showAIForm }">KI-Empfehlung</button>
-      <button @click="compareManually" :class="{ active: showManualComparison }">Manuelle Suche</button>
+      <button @click="showAIFormFunc" :class="{ active: showAIForm }">
+        KI-Empfehlung
+      </button>
+      <button
+        @click="compareManually"
+        :class="{ active: showManualComparison }"
+      >
+        Manuelle Suche
+      </button>
     </div>
 
     <transition name="fade">
@@ -12,22 +18,40 @@
         <form @submit.prevent="submitAIForm">
           <div class="form-group">
             <label for="destination">Reiseziel:</label>
-            <input v-model="userPreferences.destination" id="destination" required>
+            <input
+              v-model="userPreferences.destination"
+              id="destination"
+              required
+            />
           </div>
 
           <div class="form-group">
             <label for="budget">Budget (in Euro):</label>
-            <input v-model="userPreferences.budget" id="budget" type="number" required>
+            <input
+              v-model="userPreferences.budget"
+              id="budget"
+              type="number"
+              required
+            />
           </div>
 
           <div class="form-group">
             <label for="duration">Reisedauer (in Tagen):</label>
-            <input v-model="userPreferences.duration" id="duration" type="number" required>
+            <input
+              v-model="userPreferences.duration"
+              id="duration"
+              type="number"
+              required
+            />
           </div>
 
           <div class="form-group">
             <label for="interests">Interessen:</label>
-            <input v-model="userPreferences.interests" id="interests" required>
+            <input
+              v-model="userPreferences.interests"
+              id="interests"
+              required
+            />
           </div>
 
           <button type="submit" class="submit-btn">Empfehlung anfordern</button>
@@ -46,16 +70,39 @@
     </div>
 
     <transition name="fade">
-      <div v-if="showAIComparison && aiRecommendation.length > 0" class="travel-options">
-        <div v-for="(recommendation, index) in aiRecommendation" :key="index" class="travel-option">
+      <div
+        v-if="showAIComparison && aiRecommendation.length > 0"
+        class="travel-options"
+      >
+        <div
+          v-for="(recommendation, index) in aiRecommendation"
+          :key="index"
+          class="travel-option"
+        >
           <h3>{{ recommendation.name }}</h3>
           <p class="description">{{ recommendation.description }}</p>
           <div class="details">
-            <p><i class="fas fa-euro-sign"></i> Geschätzter Preis: {{ recommendation.estimatedPrice }} Euro</p>
-            <p><i class="fas fa-calendar-alt"></i> Empfohlene Dauer: {{ recommendation.recommendedDuration }} Tage</p>
-            <p v-if="recommendation.source"><i class="fas fa-link"></i> <a :href="recommendation.source" target="_blank" rel="noopener noreferrer">Quelle</a></p>
+            <p>
+              <i class="fas fa-euro-sign"></i> Geschätzter Preis:
+              {{ recommendation.estimatedPrice }} Euro
+            </p>
+            <p>
+              <i class="fas fa-calendar-alt"></i> Empfohlene Dauer:
+              {{ recommendation.recommendedDuration }} Tage
+            </p>
+            <p v-if="recommendation.source">
+              <i class="fas fa-link"></i>
+              <a
+                :href="recommendation.source"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Quelle</a
+              >
+            </p>
           </div>
-          <button @click="selectOption(recommendation)" class="select-btn">Diese Option wählen</button>
+          <button @click="selectOption(recommendation)" class="select-btn">
+            Diese Option wählen
+          </button>
         </div>
       </div>
     </transition>
@@ -71,17 +118,17 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default {
-  name: 'ComparisonPortalGemini',
+  name: "ComparisonPortalGemini",
   data() {
     return {
       showAIForm: false,
       showAIComparison: false,
       showManualComparison: false,
       userPreferences: {
-        destination: '',
-        budget: '',
-        duration: '',
-        interests: ''
+        destination: "",
+        budget: "",
+        duration: "",
+        interests: "",
       },
       aiRecommendation: [],
       isLoading: false,
@@ -89,7 +136,7 @@ export default {
       apiKey: null,
       genAI: null,
       model: null,
-    }
+    };
   },
   created() {
     this.initializeAPI();
@@ -98,8 +145,11 @@ export default {
     async initializeAPI() {
       this.apiKey = import.meta.env.VITE_GEMINI_API_KEY;
       if (!this.apiKey) {
-        console.error('API Key ist nicht definiert. Bitte überprüfen Sie Ihre .env Datei.');
-        this.error = 'API-Konfigurationsfehler. Bitte kontaktieren Sie den Administrator.';
+        console.error(
+          "API Key ist nicht definiert. Bitte überprüfen Sie Ihre .env Datei."
+        );
+        this.error =
+          "API-Konfigurationsfehler. Bitte kontaktieren Sie den Administrator.";
       } else {
         this.genAI = new GoogleGenerativeAI(this.apiKey);
         await this.tryInitializeModel();
@@ -116,11 +166,14 @@ export default {
           console.log(`Erfolgreich verbunden mit Modell: ${modelName}`);
           return; // Beenden Sie die Schleife, wenn ein Modell erfolgreich initialisiert wurde
         } catch (error) {
-          console.warn(`Konnte nicht mit Modell ${modelName} verbinden: ${error.message}`);
+          console.warn(
+            `Konnte nicht mit Modell ${modelName} verbinden: ${error.message}`
+          );
         }
       }
       // Wenn kein Modell erfolgreich war
-      this.error = 'Konnte keine Verbindung zu verfügbaren Modellen herstellen. Bitte versuchen Sie es später erneut.';
+      this.error =
+        "Konnte keine Verbindung zu verfügbaren Modellen herstellen. Bitte versuchen Sie es später erneut.";
     },
     showAIFormFunc() {
       this.showAIForm = true;
@@ -134,7 +187,8 @@ export default {
     },
     async submitAIForm() {
       if (!this.model) {
-        this.error = 'API nicht initialisiert. Bitte versuchen Sie es später erneut.';
+        this.error =
+          "API nicht initialisiert. Bitte versuchen Sie es später erneut.";
         return;
       }
 
@@ -185,53 +239,68 @@ export default {
         if (Array.isArray(parsedResponse)) {
           this.aiRecommendation = parsedResponse;
         } else {
-          throw new Error('Die KI-Antwort ist kein Array.');
+          throw new Error("Die KI-Antwort ist kein Array.");
         }
       } catch (parseError) {
-        console.error('Fehler beim Parsen der bereinigten Antwort:', parseError);
-        this.handleError(new Error('Die KI-Antwort konnte nicht korrekt verarbeitet werden.'));
+        console.error(
+          "Fehler beim Parsen der bereinigten Antwort:",
+          parseError
+        );
+        this.handleError(
+          new Error("Die KI-Antwort konnte nicht korrekt verarbeitet werden.")
+        );
       }
     },
     cleanJsonResponse(response) {
       const jsonMatch = response.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         let jsonString = jsonMatch[0];
-        jsonString = jsonString.replace(/\s+/g, ' ').trim();
-        jsonString = jsonString.replace(/(?<=:)\s*"(.+?)"\s*(?=,|$)/g, function(match, p1) {
-          return JSON.stringify(p1.replace(/"/g, '\\"'));
-        });
+        jsonString = jsonString.replace(/\s+/g, " ").trim();
+        jsonString = jsonString.replace(
+          /(?<=:)\s*"(.+?)"\s*(?=,|$)/g,
+          function (match, p1) {
+            return JSON.stringify(p1.replace(/"/g, '\\"'));
+          }
+        );
         return jsonString;
       }
-      throw new Error('Kein gültiges JSON in der Antwort gefunden');
+      throw new Error("Kein gültiges JSON in der Antwort gefunden");
     },
     handleError(error) {
-      console.error('Fehler beim Abrufen oder Verarbeiten der KI-Empfehlung:', error);
+      console.error(
+        "Fehler beim Abrufen oder Verarbeiten der KI-Empfehlung:",
+        error
+      );
       this.error = `Ein Fehler ist aufgetreten: ${error.message}`;
       this.aiRecommendation = this.getFallbackRecommendations();
     },
     getFallbackRecommendations() {
       return [
         {
-          name: 'Strandurlaub an der Costa del Sol',
-          description: 'Genießen Sie einen wunderbaren Strandurlaub an der spanischen Costa del Sol. Mit herrlichem Wetter, kilometerlangen Stränden und einer Vielzahl von Aktivitäten ist dies der perfekte Ort für einen entspannenden Urlaub.',
-          estimatedPrice: '950',
-          recommendedDuration: '7',
-          source: 'https://www.example-travel.com/costa-del-sol'
+          name: "Strandurlaub an der Costa del Sol",
+          description:
+            "Genießen Sie einen wunderbaren Strandurlaub an der spanischen Costa del Sol. Mit herrlichem Wetter, kilometerlangen Stränden und einer Vielzahl von Aktivitäten ist dies der perfekte Ort für einen entspannenden Urlaub.",
+          estimatedPrice: "950",
+          recommendedDuration: "7",
+          source: "https://www.example-travel.com/costa-del-sol",
         },
         {
-          name: 'Städtereise nach Paris',
-          description: 'Entdecken Sie die Stadt der Liebe mit ihren weltberühmten Sehenswürdigkeiten wie dem Eiffelturm, dem Louvre und Notre-Dame. Genießen Sie die französische Küche und die einzigartige Atmosphäre der Pariser Straßencafés.',
-          estimatedPrice: '800',
-          recommendedDuration: '5',
-          source: 'https://www.example-travel.com/paris-city-break'
-        }
+          name: "Städtereise nach Paris",
+          description:
+            "Entdecken Sie die Stadt der Liebe mit ihren weltberühmten Sehenswürdigkeiten wie dem Eiffelturm, dem Louvre und Notre-Dame. Genießen Sie die französische Küche und die einzigartige Atmosphäre der Pariser Straßencafés.",
+          estimatedPrice: "800",
+          recommendedDuration: "5",
+          source: "https://www.example-travel.com/paris-city-break",
+        },
       ];
     },
     selectOption(option) {
-      alert(`Sie haben "${option.name}" ausgewählt. Vielen Dank für Ihre Buchung!`);
-    }
-  }
-}
+      alert(
+        `Sie haben "${option.name}" ausgewählt. Vielen Dank für Ihre Buchung!`
+      );
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -265,7 +334,7 @@ h1 {
 }
 
 .comparison-options button.active {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 
@@ -273,7 +342,7 @@ h1 {
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
@@ -294,7 +363,7 @@ h1 {
 }
 
 .submit-btn {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
   padding: 12px 20px;
   border: none;
@@ -324,8 +393,12 @@ h1 {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error {
@@ -348,13 +421,13 @@ h1 {
   border: 1px solid #ddd;
   padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .travel-option:hover {
   transform: translateY(-5px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .travel-option h3 {
@@ -395,10 +468,12 @@ h1 {
   background-color: #2980b9;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

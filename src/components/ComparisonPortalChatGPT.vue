@@ -1,8 +1,5 @@
 <template>
   <div class="comparison-portal">
-    <h1>Vergleichsportal</h1>
-    <p>Vergleichen Sie hier verschiedene Reiseangebote und nutzen Sie unsere KI-Empfehlungen.</p>
-
     <div class="comparison-options">
       <button @click="compareManually">Manuell vergleichen</button>
       <button @click="handleAIButtonClick">KI-Empfehlung nutzen</button>

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="comparison-title">
     <h1>Reisevergleichsportal</h1>
-    <div>
+    <div class="comparison-options">
       <button @click="chatGPT" :class="{ active: showChatGPT }">
         KI-Empfehlung ChatGPT
       </button>
@@ -46,3 +46,22 @@ export default {
   },
 };
 </script>
+
+<style>
+.comparison-title {
+  text-align: center;
+}
+
+.comparison-options {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.comparison-options button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+</style>
