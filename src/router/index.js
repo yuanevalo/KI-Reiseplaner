@@ -3,7 +3,7 @@ import Home from "@/views/Home.vue";
 import TravelPlanner from "@/views/TravelPlanner.vue";
 import SurpriseTrips from "@/views/SurpriseTrips.vue";
 import LuxuryExperiences from "@/views/LuxuryExperiences.vue";
-import ComparisonPortalGemini from "@/views/ComparisonPortalGemini.vue";
+import ComparisonPortal from "@/views/ComparisonPortal.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -13,7 +13,7 @@ const routes = [
   {
     path: "/compare",
     name: "ComparisonPortal",
-    component: ComparisonPortalGemini,
+    component: ComparisonPortal,
   },
 ];
 
