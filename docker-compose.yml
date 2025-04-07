@@ -1,7 +1,7 @@
 services:
   express-app:
     build:
-      context: .
+      context: ./backend
       dockerfile: Dockerfile
     image: express-app
     ports:

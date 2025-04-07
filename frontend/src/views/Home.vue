@@ -40,7 +40,7 @@ export default {
     async fetchOffers() {
       try {
         const response = await axios.get(
-          "http://localhost:3000/api/scraped-offers"
+          import.meta.env.VITE_BACKEND_URL + "/api/scraped-offers"
         ); // Anfrage an deinen Backend-Endpunkt
         this.offers = response.data; // Die empfangenen Daten setzen
       } catch (error) {
