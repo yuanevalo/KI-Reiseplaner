@@ -65,8 +65,7 @@
     </div>
 
     <div v-if="error" class="error">
-      <i class="fas fa-exclamation-triangle"></i>
-      {{ error }}
+      <i class="fas fa-exclamation-triangle"></i> {{ error }}
     </div>
 
     <transition name="fade">
@@ -84,7 +83,7 @@
           <div class="details">
             <p>
               <i class="fas fa-euro-sign"></i> Geschätzter Preis:
-              {{ recommendation.estimatedPrice }} Euro
+              {{ recommendation.estimatedPrice }} €
             </p>
             <p>
               <i class="fas fa-calendar-alt"></i> Empfohlene Dauer:
@@ -108,15 +107,12 @@
     </transition>
 
     <div v-if="showManualComparison" class="travel-options">
-      <!-- Manuelle Vergleichsoptionen hier -->
       <p>Hier können Sie manuelle Vergleichsoptionen implementieren.</p>
     </div>
   </div>
 </template>
 
 <script>
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
 export default {
   name: "ComparisonPortalGemini",
   data() {
@@ -124,57 +120,18 @@ export default {
       showAIForm: false,
       showAIComparison: false,
       showManualComparison: false,
+      isLoading: false,
+      error: null,
+      aiRecommendation: [],
       userPreferences: {
         destination: "",
         budget: "",
         duration: "",
         interests: "",
       },
-      aiRecommendation: [],
-      isLoading: false,
-      error: null,
-      apiKey: null,
-      genAI: null,
-      model: null,
     };
   },
-  created() {
-    this.initializeAPI();
-  },
   methods: {
-    async initializeAPI() {
-      this.apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-      if (!this.apiKey) {
-        console.error(
-          "API Key ist nicht definiert. Bitte überprüfen Sie Ihre .env Datei."
-        );
-        this.error =
-          "API-Konfigurationsfehler. Bitte kontaktieren Sie den Administrator.";
-      } else {
-        this.genAI = new GoogleGenerativeAI(this.apiKey);
-        await this.tryInitializeModel();
-      }
-    },
-
-    async tryInitializeModel() {
-      const models = ["gemini-1.5-pro", "gemini-pro", "gemini-1.0-pro"];
-      for (const modelName of models) {
-        try {
-          this.model = this.genAI.getGenerativeModel({ model: modelName });
-          // Testen Sie das Modell mit einer einfachen Anfrage
-          await this.model.generateContent("Test");
-          console.log(`Erfolgreich verbunden mit Modell: ${modelName}`);
-          return; // Beenden Sie die Schleife, wenn ein Modell erfolgreich initialisiert wurde
-        } catch (error) {
-          console.warn(
-            `Konnte nicht mit Modell ${modelName} verbinden: ${error.message}`
-          );
-        }
-      }
-      // Wenn kein Modell erfolgreich war
-      this.error =
-        "Konnte keine Verbindung zu verfügbaren Modellen herstellen. Bitte versuchen Sie es später erneut.";
-    },
     showAIFormFunc() {
       this.showAIForm = true;
       this.showAIComparison = false;
@@ -186,113 +143,36 @@ export default {
       this.showManualComparison = true;
     },
     async submitAIForm() {
-      if (!this.model) {
-        this.error =
-          "API nicht initialisiert. Bitte versuchen Sie es später erneut.";
-        return;
-      }
-
-      this.showAIForm = false;
-      this.showAIComparison = true;
-      this.isLoading = true;
       this.error = null;
+      this.isLoading = true;
+      this.showAIComparison = false;
 
       try {
-        const prompt = this.generatePrompt();
-        const result = await this.model.generateContent(prompt);
-        const aiSuggestion = result.response.text();
-        this.processAIResponse(aiSuggestion);
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "/api/recommendations/gemini",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.userPreferences),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(data.message || "Unbekannter Fehler");
+        }
+
+        this.aiRecommendation = data.recommendations || data.fallback;
+        this.showAIForm = false;
+        this.showAIComparison = true;
       } catch (error) {
-        this.handleError(error);
+        this.error = `Fehler bei der Anfrage: ${error.message}`;
       } finally {
         this.isLoading = false;
       }
-    },
-    generatePrompt() {
-      return `Du bist ein KI-Reiseberater. Empfehle 3 bis 5 Reiseoptionen basierend auf den folgenden Präferenzen des Nutzers:
-        Ziel: ${this.userPreferences.destination}
-        Budget: ${this.userPreferences.budget} Euro
-        Dauer: ${this.userPreferences.duration} Tage
-        Interessen: ${this.userPreferences.interests}
-
-        Suche bitte mithilfe des Internets nach echten Reiseangeboten und gebe echte Quellen/ Links an. Berücksichtige dabei bitte die angegebenen Werte und im Bereich Preis kannst du einen Spielraum von +/- 10 % annehmen.
-
-        Bitte gib deine Empfehlungen in folgendem JSON-Format zurück:
-        [
-          {
-            "name": "Name der Reise",
-            "description": "Detaillierte Beschreibung der Reise",
-            "estimatedPrice": "Geschätzter Preis in Euro",
-            "recommendedDuration": "Empfohlene Dauer in Tagen",
-            "source": "URL zur Quelle des Angebots"
-          },
-          ...
-        ]`;
-    },
-    processAIResponse(aiSuggestion) {
-      console.log("Rohe AI-Antwort:", aiSuggestion);
-      const cleanedResponse = this.cleanJsonResponse(aiSuggestion);
-      console.log("Bereinigte Antwort:", cleanedResponse);
-
-      try {
-        const parsedResponse = JSON.parse(cleanedResponse);
-        if (Array.isArray(parsedResponse)) {
-          this.aiRecommendation = parsedResponse;
-        } else {
-          throw new Error("Die KI-Antwort ist kein Array.");
-        }
-      } catch (parseError) {
-        console.error(
-          "Fehler beim Parsen der bereinigten Antwort:",
-          parseError
-        );
-        this.handleError(
-          new Error("Die KI-Antwort konnte nicht korrekt verarbeitet werden.")
-        );
-      }
-    },
-    cleanJsonResponse(response) {
-      const jsonMatch = response.match(/\[[\s\S]*\]/);
-      if (jsonMatch) {
-        let jsonString = jsonMatch[0];
-        jsonString = jsonString.replace(/\s+/g, " ").trim();
-        jsonString = jsonString.replace(
-          /(?<=:)\s*"(.+?)"\s*(?=,|$)/g,
-          function (match, p1) {
-            return JSON.stringify(p1.replace(/"/g, '\\"'));
-          }
-        );
-        return jsonString;
-      }
-      throw new Error("Kein gültiges JSON in der Antwort gefunden");
-    },
-    handleError(error) {
-      console.error(
-        "Fehler beim Abrufen oder Verarbeiten der KI-Empfehlung:",
-        error
-      );
-      this.error = `Ein Fehler ist aufgetreten: ${error.message}`;
-      this.aiRecommendation = this.getFallbackRecommendations();
-    },
-    getFallbackRecommendations() {
-      return [
-        {
-          name: "Strandurlaub an der Costa del Sol",
-          description:
-            "Genießen Sie einen wunderbaren Strandurlaub an der spanischen Costa del Sol. Mit herrlichem Wetter, kilometerlangen Stränden und einer Vielzahl von Aktivitäten ist dies der perfekte Ort für einen entspannenden Urlaub.",
-          estimatedPrice: "950",
-          recommendedDuration: "7",
-          source: "https://www.example-travel.com/costa-del-sol",
-        },
-        {
-          name: "Städtereise nach Paris",
-          description:
-            "Entdecken Sie die Stadt der Liebe mit ihren weltberühmten Sehenswürdigkeiten wie dem Eiffelturm, dem Louvre und Notre-Dame. Genießen Sie die französische Küche und die einzigartige Atmosphäre der Pariser Straßencafés.",
-          estimatedPrice: "800",
-          recommendedDuration: "5",
-          source: "https://www.example-travel.com/paris-city-break",
-        },
-      ];
     },
     selectOption(option) {
       alert(

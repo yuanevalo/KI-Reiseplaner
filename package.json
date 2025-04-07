@@ -6,8 +6,8 @@
     "backend"
   ],
   "scripts": {
-    "start:frontend": "npm --workspace frontend start",
-    "start:backend": "npm --workspace backend dev",
+    "start:frontend": "npm --workspace frontend run dev",
+    "start:backend": "npm --workspace backend start",
     "start:all": "concurrently \"npm run start:frontend\" \"npm run start:backend\""
   },
   "devDependencies": {
