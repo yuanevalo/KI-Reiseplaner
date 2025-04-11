@@ -1,27 +1,25 @@
 <template>
-  <transition name="fade">
-    <div class="home">
-      <div class="title">Willkommen bei unserem Reiseplaner</div>
-      <div v-if="offers.length">
-        <div class="subtitle">Aktuelle Angebote:</div>
-        <ul class="offer-list">
-          <li
-            v-for="(offer, index) in offers"
-            :key="index"
-            class="offer-item"
-            :style="{ backgroundImage: 'url(' + offer.image + ')' }"
-          >
-            <div class="offer-content">
-              <p class="offer-title">{{ offer.title }}</p>
-              <p class="offer-price">{{ offer.price }}</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div v-else>Laden der Angebote...</div>
-      <div v-if="error" class="error">{{ error }}</div>
+  <div>
+    <div class="title">Willkommen bei unserem Reiseplaner</div>
+    <div v-if="offers.length">
+      <div class="subtitle">Aktuelle Angebote:</div>
+      <ul class="offer-list">
+        <li
+          v-for="(offer, index) in offers"
+          :key="index"
+          class="offer-item"
+          :style="{ backgroundImage: 'url(' + offer.image + ')' }"
+        >
+          <div class="offer-content">
+            <p class="offer-title">{{ offer.title }}</p>
+            <p class="offer-price">{{ offer.price }}</p>
+          </div>
+        </li>
+      </ul>
     </div>
-  </transition>
+    <div v-else>Laden der Angebote...</div>
+    <div v-if="error" class="error">{{ error }}</div>
+  </div>
 </template>
 
 <script>
@@ -55,20 +53,18 @@ export default {
 </script>
 
 <style scoped>
-.home {
-  text-align: center;
-}
-
 .title {
   font-size: 2.5rem;
   color: #333;
   padding-top: 1rem;
   font-weight: bold;
+  text-align: center;
 }
 
 .subtitle {
   font-size: 1.5rem;
   color: #666;
+  text-align: center;
 }
 
 .offer-list {
