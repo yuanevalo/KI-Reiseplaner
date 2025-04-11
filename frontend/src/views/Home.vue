@@ -1,26 +1,25 @@
 <template>
-  <transition name="fade">
-    <div class="home">
-      <h1>Willkommen bei unserem Reiseplaner</h1>
-      <div v-if="offers.length">
-        <h2>Aktuelle Angebote:</h2>
-        <ul class="offer-list">
-          <li
-            v-for="(offer, index) in offers"
-            :key="index"
-            class="offer-item"
-            :style="{ backgroundImage: 'url(' + offer.image + ')' }"
-          >
-            <div class="offer-content">
-              <p class="offer-title">{{ offer.title }}</p>
-              <p class="offer-price">{{ offer.price }}</p>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <div v-else>Laden der Angebote...</div>
+  <div>
+    <div class="title">Willkommen bei unserem Reiseplaner</div>
+    <div v-if="offers.length">
+      <div class="subtitle">Aktuelle Angebote:</div>
+      <ul class="offer-list">
+        <li
+          v-for="(offer, index) in offers"
+          :key="index"
+          class="offer-item"
+          :style="{ backgroundImage: 'url(' + offer.image + ')' }"
+        >
+          <div class="offer-content">
+            <p class="offer-title">{{ offer.title }}</p>
+            <p class="offer-price">{{ offer.price }}</p>
+          </div>
+        </li>
+      </ul>
     </div>
-  </transition>
+    <div v-else>Laden der Angebote...</div>
+    <div v-if="error" class="error">{{ error }}</div>
+  </div>
 </template>
 
 <script>
@@ -31,6 +30,7 @@ export default {
   data() {
     return {
       offers: [],
+      error: null,
     };
   },
   mounted() {
@@ -45,45 +45,26 @@ export default {
         this.offers = response.data; // Die empfangenen Daten setzen
       } catch (error) {
         console.error("Error fetching offers:", error); // Fehlerbehandlung
-        this.offers = this.fallbackOffers();
+        this.error = error;
       }
-    },
-    fallbackOffers() {
-      return [
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 10 €",
-          image: "https://picsum.photos/200/300",
-        },
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 100 €",
-          image: "https://picsum.photos/200/300",
-        },
-        {
-          title: "Berlin, Deutschland",
-          price: "ab 1000 €",
-          image: "https://picsum.photos/200/300",
-        },
-      ];
     },
   },
 };
 </script>
 
 <style scoped>
-.home {
+.title {
+  font-size: 2.5rem;
+  color: #333;
+  padding-top: 1rem;
+  font-weight: bold;
   text-align: center;
 }
 
-h1 {
-  font-size: 2.5rem;
-  color: #333;
-}
-
-h2 {
+.subtitle {
   font-size: 1.5rem;
   color: #666;
+  text-align: center;
 }
 
 .offer-list {
@@ -138,5 +119,13 @@ h2 {
   position: absolute;
   bottom: 10px;
   right: 10px;
+}
+
+.error {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-top: 20px;
 }
 </style>

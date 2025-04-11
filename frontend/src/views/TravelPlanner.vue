@@ -4,3 +4,7 @@
     <p>Hier können Sie Ihre personalisierte Reise planen.</p>
   </div>
 </template>
+
+<script></script>
+
+<style scoped></style>

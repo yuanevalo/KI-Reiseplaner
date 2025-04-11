@@ -4,3 +4,7 @@
     <p>Entdecken Sie unsere exklusiven Luxusreisen und -erlebnisse.</p>
   </div>
 </template>
+
+<script></script>
+
+<style scoped></style>

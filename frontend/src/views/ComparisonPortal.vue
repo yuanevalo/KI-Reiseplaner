@@ -1,5 +1,5 @@
 <template>
-  <div class="comparison-title">
+  <div class="comparison">
     <h1>Reisevergleichsportal</h1>
     <div class="toggle-container">
       <label class="switch">
@@ -36,7 +36,7 @@ export default {
 </script>
 
 <style>
-.comparison-title {
+.comparison {
   text-align: center;
   position: relative;
 }
