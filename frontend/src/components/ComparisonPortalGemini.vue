@@ -61,7 +61,7 @@
 
     <div v-if="isLoading" class="loading">
       <div class="spinner"></div>
-      <p>Lade KI-Empfehlung...</p>
+      <p>Lade Empfehlungen...</p>
     </div>
 
     <div v-if="error" class="error">
@@ -106,9 +106,43 @@
       </div>
     </transition>
 
-    <div v-if="showManualComparison" class="travel-options">
-      <p>Hier können Sie manuelle Vergleichsoptionen implementieren.</p>
-    </div>
+    <transition name="fade">
+      <div
+        v-if="showManualComparison && manualRecommendations.length > 0"
+        class="travel-options"
+      >
+        <div
+          v-for="(recommendation, index) in manualRecommendations"
+          :key="index"
+          class="travel-option"
+        >
+          <h3>{{ recommendation.name }}</h3>
+          <p class="description">{{ recommendation.description }}</p>
+          <div class="details">
+            <p>
+              <i class="fas fa-euro-sign"></i> Geschätzter Preis:
+              {{ recommendation.estimatedPrice }} €
+            </p>
+            <p>
+              <i class="fas fa-calendar-alt"></i> Empfohlene Dauer:
+              {{ recommendation.recommendedDuration }} Tage
+            </p>
+            <p v-if="recommendation.source">
+              <i class="fas fa-link"></i>
+              <a
+                :href="recommendation.source"
+                target="_blank"
+                rel="noopener noreferrer"
+                >Quelle</a
+              >
+            </p>
+          </div>
+          <button @click="selectOption(recommendation)" class="select-btn">
+            Diese Option wählen
+          </button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -123,6 +157,7 @@ export default {
       isLoading: false,
       error: null,
       aiRecommendation: [],
+      manualRecommendations: [],
       userPreferences: {
         destination: "",
         budget: "",
@@ -137,10 +172,46 @@ export default {
       this.showAIComparison = false;
       this.showManualComparison = false;
     },
-    compareManually() {
+    async compareManually() {
       this.showAIForm = false;
       this.showAIComparison = false;
       this.showManualComparison = true;
+      this.error = null;
+      this.isLoading = true;
+
+      try {
+        const response = await fetch(
+          import.meta.env.VITE_BACKEND_URL + "/api/recommendations/gemini",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              destination: "Europa",
+              budget: 500,
+              duration: 5,
+              interests: "Kultur, Natur, Erholung",
+            }),
+          }
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(
+            data.message || "Unbekannter Fehler bei der manuellen Suche"
+          );
+        }
+
+        this.manualRecommendations =
+          data.recommendations || data.fallback || [];
+      } catch (error) {
+        this.error = `Fehler bei der manuellen Anfrage: ${error.message}`;
+        this.manualRecommendations = [];
+      } finally {
+        this.isLoading = false;
+      }
     },
     async submitAIForm() {
       this.error = null;
@@ -189,11 +260,6 @@ export default {
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-}
-
-h1 {
-  text-align: center;
-  color: #333;
 }
 
 .comparison-options {
@@ -352,6 +418,7 @@ h1 {
 .fade-leave-active {
   transition: opacity 0.5s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;

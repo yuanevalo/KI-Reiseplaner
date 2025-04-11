@@ -22,5 +22,6 @@ export default {
 main {
   height: 100vh;
   padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
 }
 </style>
