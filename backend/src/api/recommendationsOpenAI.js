@@ -11,11 +11,26 @@ router.post("/", async (req, res) => {
     {
       role: "system",
       content:
-        "Du bist ein Reiseberater. Gib 1-3 Reiseziele im JSON-Format zurück.",
+        "Du bist ein Reiseberater. Gib 3 bis 5 Reiseziele im JSON-Format zurück.",
     },
     {
       role: "user",
-      content: `Reiseziel: ${destination}\nBudget: ${budget} Euro\nDauer: ${duration} Tage\nInteressen: ${interests}\n\nFormat:\n[\n  {\n    "name": "...",\n    "description": "...",\n    "estimatedPrice": 1234,\n    "recommendedDuration": 7,\n    "source": "https://..." (optional)\n  }\n]`,
+      content: `
+      Reiseziel: ${destination}
+      Budget: ${budget} Euro
+      Dauer: ${duration} Tage
+      Interessen: ${interests}
+
+      Format:
+      [
+        {
+          "name": "...",
+          "description": "...",
+          "estimatedPrice": 1234,
+          "recommendedDuration": 7,
+          "source": "https://..." (optional)
+        }
+      ]`,
     },
   ];
 
@@ -29,12 +44,11 @@ router.post("/", async (req, res) => {
     const aiReply = completion.choices[0].message.content;
     const recommendations = JSON.parse(aiReply);
 
-    res.json({ success: true, recommendations });
+    res.json({ recommendations });
   } catch (error) {
     console.error("❌ OpenAI Fehler:", error.message);
     res.status(error.status || 500).json({
-      success: false,
-      message: "Fehler bei der Anfrage an OpenAI",
+      message: error.message,
     });
   }
 });

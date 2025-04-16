@@ -22,23 +22,24 @@ async function getAvailableModel() {
 }
 
 function buildPrompt({ destination, budget, duration, interests }) {
-  return `Du bist ein KI-Reiseberater. Empfehle 3 bis 5 Reiseoptionen:
-Ziel: ${destination}
-Budget: ${budget} Euro
-Dauer: ${duration} Tage
-Interessen: ${interests}
+  return `
+    Du bist ein KI-Reiseberater. Empfehle 3 bis 5 Reiseoptionen:
+    Ziel: ${destination}
+    Budget: ${budget} Euro
+    Dauer: ${duration} Tage
+    Interessen: ${interests}
 
-Antwortformat:
-[
-  {
-    "name": "Name der Reise",
-    "description": "Beschreibung",
-    "estimatedPrice": "Preis",
-    "recommendedDuration": "Dauer",
-    "source": "URL"
-  },
-  ...
-]`;
+    Antwortformat:
+    [
+      {
+        "name": "Name der Reise",
+        "description": "Beschreibung",
+        "estimatedPrice": "Preis",
+        "recommendedDuration": "Dauer",
+        "source": "URL"
+      },
+      ...
+    ]`;
 }
 
 function extractJson(raw) {
@@ -56,24 +57,14 @@ router.post("/", async (req, res) => {
     const result = await model.generateContent(prompt);
     const raw = result.response.text();
 
-    console.log("🧠 Gemini-Antwort:", raw);
+    console.log("🧠 Google-Antwort:", raw);
 
     const recommendations = extractJson(raw);
-    res.json({ success: true, recommendations });
+    res.json({ recommendations });
   } catch (error) {
-    console.error("❌ Gemini-Fehler:", error.message);
-    res.status(500).json({
-      success: false,
+    console.error("❌ Google-Fehler:", error.message);
+    res.status(error.status || 500).json({
       message: error.message,
-      fallback: [
-        {
-          name: "Costa del Sol",
-          description: "Sonne, Strand und Relaxen.",
-          estimatedPrice: "950",
-          recommendedDuration: "7",
-          source: "https://www.example-travel.com/costa-del-sol",
-        },
-      ],
     });
   }
 });
