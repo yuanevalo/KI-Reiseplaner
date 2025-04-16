@@ -181,7 +181,7 @@ export default {
 
       try {
         const response = await fetch(
-          import.meta.env.VITE_BACKEND_URL + "/api/recommendations/gemini",
+          import.meta.env.VITE_BACKEND_URL + "/api/recommendations/google",
           {
             method: "POST",
             headers: {

@@ -1,9 +1,11 @@
 <template>
-  <Header />
-  <main>
-    <router-view></router-view>
-  </main>
-  <Footer />
+  <div id="app-layout">
+    <Header />
+    <main>
+      <router-view></router-view>
+    </main>
+    <Footer />
+  </div>
 </template>
 
 <script>
@@ -19,8 +21,24 @@ export default {
 </script>
 
 <style>
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+#app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 main {
-  padding-top: 3rem;
-  padding-bottom: 3rem;
+  flex: 1;
+  padding: 3rem 1rem;
 }
 </style>

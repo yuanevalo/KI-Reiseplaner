@@ -10,14 +10,14 @@ app.use(express.json());
 
 const scrapedOffersRoute = (await import("./api/scrapedOffers.js")).default;
 const recommendationsGeminiRoute = (
-  await import("./api/recommendationsGemini.js")
+  await import("./api/recommendationsGoogle.js")
 ).default;
 const recommendationsOpenAIRoute = (
   await import("./api/recommendationsOpenAI.js")
 ).default;
 
 app.use("/api/scraped-offers", scrapedOffersRoute);
-app.use("/api/recommendations/gemini", recommendationsGeminiRoute);
+app.use("/api/recommendations/google", recommendationsGeminiRoute);
 app.use("/api/recommendations/openai", recommendationsOpenAIRoute);
 
 const port = process.env.PORT || 3000;

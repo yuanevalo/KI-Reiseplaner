@@ -1,20 +1,26 @@
 <template>
-  <div class="comparison">
-    <h1>Reisevergleichsportal</h1>
-    <div class="toggle-container">
-      <label class="switch">
-        <input type="checkbox" v-model="isChatGPTActive" />
-        <span class="slider round"></span>
-      </label>
-      <span>{{ isChatGPTActive ? "ChatGPT" : "Gemini" }}</span>
+  <section class="comparison-page">
+    <div class="header">
+      <h1>Reisevergleichsportal</h1>
+      <div class="toggle-container">
+        <label class="switch">
+          <input type="checkbox" v-model="isChatGPTActive" />
+          <span class="slider round"></span>
+        </label>
+        <span class="toggle-label">{{
+          isChatGPTActive ? "ChatGPT" : "Gemini"
+        }}</span>
+      </div>
     </div>
-    <div v-if="isChatGPTActive">
-      <ComparisonPortalChatGPT />
+
+    <div class="comparison-content">
+      <component
+        :is="
+          isChatGPTActive ? 'ComparisonPortalChatGPT' : 'ComparisonPortalGemini'
+        "
+      />
     </div>
-    <div v-else>
-      <ComparisonPortalGemini />
-    </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -35,26 +41,45 @@ export default {
 };
 </script>
 
-<style>
-.comparison {
-  text-align: center;
-  position: relative;
+<style scoped>
+.comparison-page {
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
 }
 
 .toggle-container {
-  position: absolute;
-  top: 20px;
-  right: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.75rem;
+}
+
+.toggle-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #42b983;
 }
 
 .switch {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 25px;
+  width: 52px;
+  height: 28px;
 }
 
 .switch input {
@@ -72,26 +97,33 @@ export default {
   bottom: 0;
   background-color: #ccc;
   transition: 0.4s;
-  border-radius: 25px;
+  border-radius: 34px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 3.5px;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: #2196f3;
+  background-color: #42b983;
 }
 
 input:checked + .slider:before {
   transform: translateX(24px);
+}
+
+.comparison-content {
+  background: #f9f9f9;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 </style>
