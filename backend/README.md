@@ -14,8 +14,8 @@ src/\
 npm install --save-dev
 ```
 
-### Start the Server
+### Compile and Hot-Reload for Development
 
 ```sh
-npm run start
+npm run dev
 ```

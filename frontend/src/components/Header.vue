@@ -1,11 +1,14 @@
 <template>
   <header>
     <nav>
-      <router-link to="/">Home</router-link>
-      <router-link to="/planner">Reiseplaner</router-link>
-      <router-link to="/surprise">Überraschungsreisen</router-link>
-      <router-link to="/luxury">Luxusreisen</router-link>
-      <router-link to="/compare">Vergleichsportal</router-link>
+      <div class="logo">KI-Reiseplaner</div>
+      <div class="nav-links">
+        <router-link to="/">Home</router-link>
+        <router-link to="/planner">Reiseplaner</router-link>
+        <router-link to="/surprise">Überraschungsreisen</router-link>
+        <router-link to="/luxury">Luxusreisen</router-link>
+        <router-link to="/compare">Vergleichsportal</router-link>
+      </div>
     </nav>
   </header>
 </template>
@@ -23,15 +26,27 @@ header {
 
 nav {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 }
 
-nav a {
+.logo {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.nav-links a {
   color: white;
   text-decoration: none;
 }
 
-nav a.router-link-exact-active {
+.nav-links a.router-link-exact-active {
   color: #42b983;
   font-weight: bold;
 }

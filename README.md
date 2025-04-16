@@ -32,7 +32,7 @@ OPENAI_API_KEY=YOUR_OPENAI_KEY
 Um sowohl das **Frontend** als auch das **Backend** gleichzeitig zu starten, verwende den folgenden Befehl:
 
 ```bash
-npm start
+npm dev
 ```
 
 Dies wird sowohl den Vite-Entwicklungsserver für das Frontend als auch den Express-Server für das Backend gleichzeitig starten.
@@ -44,11 +44,11 @@ Falls du nur das **Frontend** oder nur das **Backend** starten möchtest, kannst
 - **Frontend**:
 
   ```bash
-  npm run start:frontend
+  npm run dev:frontend
   ```
 
 - **Backend**:
 
   ```bash
-  npm run start:backend
+  npm run dev:backend
   ```
