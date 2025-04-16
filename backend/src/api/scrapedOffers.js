@@ -25,6 +25,7 @@ router.get("/", async (req, res) => {
     // Navigate to the page
     await page.goto(url, {
       waitUntil: "networkidle0",
+      timeout: 5000,
     });
 
     // Check if we're past the CAPTCHA
