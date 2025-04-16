@@ -4,12 +4,12 @@ Dies ist das Frontend für den KI-gestützten Reiseplaner. Es wurde mit [Vue 3](
 
 ## 📁 Projektstruktur (empfohlen)
 
-src/
-├── assets/ # Bilder, Icons, etc.
-├── components/ # Wiederverwendbare Komponenten
-├── views/ # Seiten wie Home.vue
-├── router/ # vue-router Setup
-├── Layout.vue # Root-Komponente
+src/\
+├── assets/ # Bilder, Icons, etc.\
+├── components/ # Wiederverwendbare Komponenten\
+├── views/ # Seiten wie Home.vue\
+├── router/ # vue-router Setup\
+├── Layout.vue # Root-Komponente\
 └── main.js # Einstiegspunkt
 
 ## Recommended IDE Setup

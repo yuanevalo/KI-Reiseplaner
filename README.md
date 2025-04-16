@@ -4,8 +4,8 @@ Dies ist das **KI-Reiseplaner**-Projekt, das das **Frontend** und das **Backend*
 
 ## 📁 Struktur
 
-ki-reiseplaner/
-├── frontend/ # Frontend-Projekt (Vue, Vite)
+ki-reiseplaner/\
+├── frontend/ # Frontend-Projekt (Vue, Vite)\
 └── backend/ # Backend-Projekt (Node.js, Express)
 
 ## 📑 .env Beispiel

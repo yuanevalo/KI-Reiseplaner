@@ -4,8 +4,8 @@ Dies ist das Backend für den KI-gestützten Reiseplaner. Es nutzt **Express.js*
 
 ## 📁 Projektstruktur (empfohlen)
 
-src/
-├── api/ # KI- und Scraping-Dienste
+src/\
+├── api/ # KI- und Scraping-Dienste\
 └── server.js # Einstiegspunkt für Express-Server
 
 ## Project Setup

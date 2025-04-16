@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ["./../.env"] });
+dotenv.config({ path: ["./.env", "./../.env"] });
 
 const app = express();
 app.use(cors({ origin: process.env.FRONTEND_URL }));
