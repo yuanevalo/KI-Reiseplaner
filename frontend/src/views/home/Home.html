@@ -14,7 +14,13 @@
     </div>
   </div>
 
-  <div v-else class="loading">Angebote werden geladen...</div>
+  <div v-else v-if="!error" class="loading">
+    <div class="spinner"></div>
+    <p>Angebote werden geladen...</p>
+  </div>
 
-  <div v-if="error" class="error">{{ error.message || error }}</div>
+  <div v-if="error" class="error">
+    <p>{{ error.message || error }}</p>
+    <button class="retry-btn" @click="fetchOffers">Erneut Laden</button>
+  </div>
 </section>

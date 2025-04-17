@@ -1,8 +1,5 @@
 import express from "express";
 import puppeteer from "puppeteer";
-import dotenv from "dotenv";
-
-dotenv.config({ path: ["./../../.env", "./../../.env.development"] });
 
 const router = express.Router();
 
@@ -31,7 +28,7 @@ router.get("/", async (req, res) => {
     // Check if we're past the CAPTCHA
     const content = await page.content();
     if (content.includes("Nur einen Moment…")) {
-      throw new Error("CAPTCHA erkannt – Zugriff blockiert!");
+      throw new Error("CAPTCHA erkannt - Zugriff blockiert!");
     }
 
     // Scrape die Titel und Preise
@@ -57,7 +54,9 @@ router.get("/", async (req, res) => {
     res.json(results);
   } catch (error) {
     console.error("❌ Scraping-Fehler:", error);
-    res.status(503).json({ error: `Fehler beim Abrufen: ${error.message}` });
+    res.status(error.status || 500).json({
+      message: error.message,
+    });
   } finally {
     if (browser) {
       await browser.close();

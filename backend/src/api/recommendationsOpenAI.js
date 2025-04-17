@@ -4,10 +4,8 @@ import OpenAI from "openai";
 const router = express.Router();
 const openaiClient = new OpenAI(process.env.OPENAI_API_KEY || "OPENAI_API_KEY");
 
-router.post("/", async (req, res) => {
-  const { destination, budget, duration, interests } = req.body;
-
-  const messages = [
+function buildPrompt({ destination, budget, duration, interests }) {
+  return [
     {
       role: "system",
       content:
@@ -33,20 +31,34 @@ router.post("/", async (req, res) => {
       ]`,
     },
   ];
+}
 
+function extractJson(raw) {
+  const match = raw.match(/\[[\s\S]*\]/);
+  if (!match) throw new Error("Kein JSON gefunden.");
+  return JSON.parse(match[0]);
+}
+
+router.post("/", async (req, res) => {
+  const { destination, budget, duration, interests } = req.body;
+
+  const prompt = buildPrompt({ destination, budget, duration, interests });
   try {
     const completion = await openaiClient.chat.completions.create({
       model: "gpt-3.5-turbo",
-      messages,
+      messages: prompt,
       temperature: 0.7,
     });
 
-    const aiReply = completion.choices[0].message.content;
-    const recommendations = JSON.parse(aiReply);
+    const raw = completion.choices[0].message.content;
+
+    console.log("🧠 OpenAI-Antwort:", raw);
+
+    const recommendations = extractJson(raw);
 
     res.json({ recommendations });
   } catch (error) {
-    console.error("❌ OpenAI Fehler:", error.message);
+    console.error("❌ OpenAI-Fehler:", error.message);
     res.status(error.status || 500).json({
       message: error.message,
     });

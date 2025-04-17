@@ -198,16 +198,10 @@ export default {
 
         const data = await response.json();
 
-        if (!data.success) {
-          throw new Error(
-            data.message || "Unbekannter Fehler bei der manuellen Suche"
-          );
-        }
-
         this.manualRecommendations =
           data.recommendations || data.fallback || [];
       } catch (error) {
-        this.error = `Fehler bei der manuellen Anfrage: ${error.message}`;
+        this.error = error;
         this.manualRecommendations = [];
       } finally {
         this.isLoading = false;
@@ -231,10 +225,6 @@ export default {
         );
 
         const data = await response.json();
-
-        if (!data.success) {
-          throw new Error(data.message || "Unbekannter Fehler");
-        }
 
         this.aiRecommendation = data.recommendations || data.fallback;
         this.showAIForm = false;
