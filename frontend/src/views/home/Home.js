@@ -62,5 +62,10 @@ export default {
         ];
       }
     },
+    selectOption(offer) {
+      alert(
+        `Sie haben "${offer.title}" ausgewählt. Vielen Dank für Ihre Buchung!`
+      );
+    },
   },
 };
