@@ -17,11 +17,11 @@ function buildPrompt({ destination, budget, duration, interests }) {
     Antwortformat:
     [
       {
-        "name": "Name der Reise",
-        "description": "Beschreibung",
-        "estimatedPrice": "Preis",
-        "recommendedDuration": "Dauer",
-        "source": "URL"
+        "name": "...",
+        "description": "...",
+        "estimatedPrice": 1234,
+        "recommendedDuration": 7,
+        "source": "https://..."
       },
       ...
     ]`;

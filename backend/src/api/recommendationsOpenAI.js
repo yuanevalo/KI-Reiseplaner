@@ -26,7 +26,7 @@ function buildPrompt({ destination, budget, duration, interests }) {
           "description": "...",
           "estimatedPrice": 1234,
           "recommendedDuration": 7,
-          "source": "https://..." (optional)
+          "source": "https://..."
         }
       ]`,
     },
